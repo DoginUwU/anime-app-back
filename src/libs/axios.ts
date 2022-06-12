@@ -6,4 +6,16 @@ const api = axios.create({
     timeout: 10000,
 });
 
+//add X-Requested-With header
+api.interceptors.request.use(
+    (config) => {
+        // @ts-ignore
+        config.headers["X-Requested-With"] = "XMLHttpRequest";
+        return config;
+    }
+    , (error) => {
+        throw new AppError(error.message, 500);
+    }
+);
+
 export { api };
