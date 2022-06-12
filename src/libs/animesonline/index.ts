@@ -1,10 +1,10 @@
-import axios, { AxiosRequestHeaders } from "axios";
+import { AxiosRequestHeaders } from "axios";
 import { load } from "cheerio";
 import { Readable } from "stream";
-import { ReadableStream } from "stream/web";
 import { IAnime, ISeason } from "../../@types/anime";
 import { ISearch } from "../../@types/search";
 import { getPage } from "../../utils/page";
+import { api } from "../axios";
 import { Engine } from "../engine";
 
 class AnimesOnline extends Engine {
@@ -68,21 +68,21 @@ class AnimesOnline extends Engine {
     async watch(address: string): Promise<Readable | null> {
         let stream: Readable | null = null;
 
-        const html = (await axios.get(`${this.url}${address}`)).data;
+        const html = (await api.get(`${this.url}${address}`)).data;
 
         const search = await load(html);
         const url = search('iframe').attr('src');
             
         if (!url) return stream;
 
-        const text = (await axios.get(url)).data;
+        const text = (await api.get(url)).data;
         const start = text.indexOf(`"play_url":`);
         var tempDoc = text.substring(start);
         const end = tempDoc.indexOf('","');
 
         const newUrl = tempDoc.substring(0, end).replace('"play_url":"', '');
                 
-        await axios({
+        await api({
             method: 'get',
             url: newUrl,
             responseType: 'stream',
