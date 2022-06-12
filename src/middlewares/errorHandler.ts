@@ -8,7 +8,7 @@ const errorHandler = (
     _: NextFunction,
 ) => {
     if (err instanceof AppError) {
-        return response.status(err.statusCode).json({
+        return response.status(200).json({
             status: 'error',
             message: err.message,
         });
