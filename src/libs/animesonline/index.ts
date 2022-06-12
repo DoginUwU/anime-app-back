@@ -10,7 +10,7 @@ import { Engine } from "../engine";
 class AnimesOnline extends Engine {
     headers: AxiosRequestHeaders = {
         'X-Requested-With': 'XMLHttpRequest',
-        'Referer': 'https://still-brushlands-24168.herokuapp.com',
+        'Referer': 'https://anime-app-back.herokuapp.com',
     };
 
     constructor() {
