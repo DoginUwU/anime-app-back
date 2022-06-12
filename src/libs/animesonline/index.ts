@@ -13,7 +13,7 @@ class AnimesOnline extends Engine {
     };
 
     constructor() {
-        super("AnimesOnline", "https://still-brushlands-24168.herokuapp.com/https://animesonline.cc");
+        super("AnimesOnline", "https://animesonline.cc");
     }
 
     async search(query: string): Promise<ISearch> {
