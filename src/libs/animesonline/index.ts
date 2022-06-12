@@ -9,10 +9,20 @@ import { Engine } from "../engine";
 
 class AnimesOnline extends Engine {
     headers: AxiosRequestHeaders = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-        'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
-        'X-Requested-With': 'XMLHttpRequest'
+        'X-Requested-With': 'XMLHttpRequest',
+        'accept': 'application/json, text/plain, */*',
+        'accept-language': 'en-US,en;q=0.9',
+        'if-none-match': 'W/"2666-Zk3Sie7K34jZXASeZMxutI02+C4"',
+        'origin': 'https://magiceden.io',
+        'referer': 'https://magiceden.io/',
+        'sec-ch-ua': '" Not;A Brand";v="99", "Google Chrome";v="97", "Chromium";v="97"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': "Windows",
+        'sec-fetch-dest': 'empty',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-site': 'same-site',
+        'user-agent': 
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36',
     };
 
     constructor() {
@@ -20,7 +30,7 @@ class AnimesOnline extends Engine {
     }
 
     async search(query: string): Promise<ISearch> {
-        const address = `/search/${query}`;
+        const address = `search/${query}`;
         const search = await getPage(this.url, address, this.headers);
 
         const items = search('article').toArray().map((item) => {

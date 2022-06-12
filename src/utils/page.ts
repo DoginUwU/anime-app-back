@@ -10,7 +10,6 @@ const getPage = async (
   return api
     .get(`${url}/${params}`, {
       headers,
-      withCredentials: true,
     })
     .then((response) => {
       return load(response.data);
