@@ -2,9 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import "express-async-errors";
 import dotenv from 'dotenv';
-import { routes } from './routes';
-
 dotenv.config();
+import 'axios-debug-log';
+import { routes } from './routes';
 
 const app = express();
 
