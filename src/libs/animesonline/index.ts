@@ -9,12 +9,11 @@ import { Engine } from "../engine";
 
 class AnimesOnline extends Engine {
     headers: AxiosRequestHeaders = {
-        'X-Requested-With': 'XMLHttpRequest',
-        'Referer': 'https://anime-app-back.herokuapp.com',
+        'origin': 'https://animesonline.cc'
     };
 
     constructor() {
-        super("AnimesOnline", "https://animesbr.biz");
+        super("AnimesOnline", "https://still-brushlands-24168.herokuapp.com/https://animesonline.cc");
     }
 
     async search(query: string): Promise<ISearch> {
