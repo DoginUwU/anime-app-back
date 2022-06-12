@@ -14,7 +14,7 @@ class AnimesOnline extends Engine {
     };
 
     constructor() {
-        super("AnimesOnline", "https://animesonline.cc");
+        super("AnimesOnline", "https://animesbr.biz");
     }
 
     async search(query: string): Promise<ISearch> {
