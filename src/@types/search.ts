@@ -8,4 +8,4 @@ interface ISearch {
     items: ISearchItem[];
 }
 
-export type { ISearch };
+export type { ISearch, ISearchItem };

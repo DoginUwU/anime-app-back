@@ -7,6 +7,11 @@ const routes = Router();
 
 routes.get("/", new BaseController().get);
 
+routes.get("/news", celebrate({
+    [Segments.QUERY]: {
+        site: Joi.string().required()
+    }
+}), new AnimeController().news);
 routes.get("/search", celebrate({
     [Segments.QUERY]: {
         search: Joi.string().required(),

@@ -2,7 +2,7 @@ import { AxiosRequestHeaders } from "axios";
 import { load } from "cheerio";
 import { Readable } from "stream";
 import { IAnime, ISeason } from "../../@types/anime";
-import { ISearch } from "../../@types/search";
+import { ISearch, ISearchItem } from "../../@types/search";
 import { getPage } from "../../utils/page";
 import { api } from "../axios";
 import { Engine } from "../engine";
@@ -14,6 +14,23 @@ class AnimesOnline extends Engine {
 
     constructor() {
         super("AnimesOnline", "https://animesonline.cc");
+    }
+
+    async news(): Promise<ISearch> { 
+        const address = `anime`;
+        const search = await getPage(this.url, address, this.headers);
+
+        const items = search('article.item').toArray().map((item) => { 
+            return {
+                title: search(item).find('.data a').text().trim(),
+                image: search(item).find('.poster img').attr('src') ?? '',
+                url: search(item).find('a').attr('href')?.replace(this.url , '') ?? '',
+            } as ISearchItem
+        });
+
+        return {
+            items
+        };
     }
 
     async search(query: string): Promise<ISearch> {
