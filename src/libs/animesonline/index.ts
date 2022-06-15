@@ -110,32 +110,6 @@ class AnimesOnline extends Engine {
         });
 
         return stream;
-        // const browser = await puppeteer.launch();
-        // const page = await browser.newPage();
-
-        // await page.goto(`${this.url}${address}`);
-        // await page.waitForSelector('iframe');
-        // //get iframe
-        // const iframe = await page.$('iframe');
-
-        // if (!iframe) return;
-        // const html = await iframe.contentFrame();
-
-        // const url = await html?.evaluate(() => {
-        //     const text = document.documentElement.innerHTML;
-        //     const start = text.indexOf(`"play_url":`);
-        //     var tempDoc = document.documentElement.innerHTML.substring(start);
-        //     const end = tempDoc.indexOf('","');
-            
-        //     return tempDoc.substring(0, end).replace('"play_url":"', '');
-        // });
-
-        // if (!url) return;
-
-        
-        
-        // await browser.close();
-        // return {};
     }
 }
 
