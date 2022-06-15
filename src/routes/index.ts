@@ -9,7 +9,8 @@ routes.get("/", new BaseController().get);
 
 routes.get("/news", celebrate({
     [Segments.QUERY]: {
-        site: Joi.string().required()
+        site: Joi.string().required(),
+        page: Joi.number().optional(),
     }
 }), new AnimeController().news);
 routes.get("/search", celebrate({

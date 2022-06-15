@@ -38,7 +38,7 @@ abstract class Engine {
     this.url = url;
     }
     
-    abstract news(): Promise<ISearch>;
+    abstract news(page?: number): Promise<ISearch>;
     abstract search(query: string): Promise<ISearch>;
     abstract anime(url: string): Promise<IAnime>;
     abstract watch(url: string, response?: Response): Promise<IAnime | Readable | null>;

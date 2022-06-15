@@ -16,8 +16,8 @@ class AnimesOnline extends Engine {
         super("AnimesOnline", "https://animesonline.cc");
     }
 
-    async news(): Promise<ISearch> { 
-        const address = `anime`;
+    async news(page?: number): Promise<ISearch> { 
+        const address = `anime/page/${page ?? 1}`;
         const search = await getPage(this.url, address, this.headers);
 
         const items = search('article.item').toArray().map((item) => { 
@@ -28,8 +28,16 @@ class AnimesOnline extends Engine {
             } as ISearchItem
         });
 
+        const currentPage = Number(search('.pagination .current').text().trim());
+        const totalPages = Number(search('.pagination span').first().text().replace(`Pagina ${currentPage} de `, '').trim());
+        const hasNext = currentPage < totalPages;
+
         return {
-            items
+            items,
+            page: currentPage,
+            hasNext,
+            total: totalPages
+
         };
     }
 
@@ -46,7 +54,10 @@ class AnimesOnline extends Engine {
         });
 
         return {
-            items
+            items,
+            page: 1,
+            hasNext: false,
+            total: 1
         };
     }
 
