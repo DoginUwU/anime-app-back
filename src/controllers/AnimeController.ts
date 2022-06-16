@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { Readable } from "stream";
+import { IWatch } from "../@types/watch";
 import { getEngine } from "../utils/engine";
 
 class AnimeController {
@@ -8,6 +9,14 @@ class AnimeController {
         const engine = getEngine(site);
 
         const result = await engine.news(page);
+        return res.status(200).json(result);
+    }
+
+     public async popular(req: Request, res: Response): Promise<Response> {
+        const { site, page } = req.query as any;
+        const engine = getEngine(site);
+
+        const result = await engine.popular(page);
         return res.status(200).json(result);
     }
 
@@ -31,11 +40,9 @@ class AnimeController {
         const { url, site } = req.query as any;
         const engine = getEngine(site);
 
-        const result = await engine.watch(url) as Readable;
-        res.writeHead(200, {
-            "Content-Type": "video/mp4",
-        });
-        result.pipe(res);
+        const result = await engine.watch(url) as IWatch;
+        res.writeHead(200, result.headers);
+        result.stream?.pipe(res);
         return res.status(200);
     }
 }

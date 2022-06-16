@@ -1,8 +1,9 @@
-import { AxiosRequestHeaders } from "axios";
+import { AxiosRequestHeaders, AxiosResponseHeaders } from "axios";
 import { load } from "cheerio";
 import { Readable } from "stream";
 import { IAnime, ISeason } from "../../@types/anime";
 import { ISearch, ISearchItem } from "../../@types/search";
+import { IWatch } from "../../@types/watch";
 import { getPage } from "../../utils/page";
 import { api } from "../axios";
 import { Engine } from "../engine";
@@ -20,12 +21,12 @@ class AnimesOnline extends Engine {
         const address = `anime/page/${page ?? 1}`;
         const search = await getPage(this.url, address, this.headers);
 
-        const items = search('article.item').toArray().map((item) => { 
+        const items = search('article.item').toArray().map<ISearchItem>((item) => { 
             return {
                 title: search(item).find('.data a').text().trim(),
                 image: search(item).find('.poster img').attr('src') ?? '',
                 url: search(item).find('a').attr('href')?.replace(this.url , '') ?? '',
-            } as ISearchItem
+            }
         });
 
         const currentPage = Number(search('.pagination .current').text().trim());
@@ -41,6 +42,26 @@ class AnimesOnline extends Engine {
         };
     }
 
+    async popular(): Promise<ISearch> { 
+        const address = ``;
+        const search = await getPage(this.url, address, this.headers);
+
+        const items = search('#dtw_content_views-2 .w_item_b').toArray().map<ISearchItem>((item) => { 
+            return {
+                url: this.removeBaseUrl(search(item).find('a').attr('href')),
+                title: search(item).find('.data h3').text().trim(),
+                image: search(item).find('.image img').attr('src') ?? '',
+            }
+        });
+
+        return {
+            items,
+            page: 1,
+            hasNext: false,
+            total: 1,
+        }
+    }
+
     async search(query: string): Promise<ISearch> {
         const address = `search/${query}`;
         const search = await getPage(this.url, address, this.headers);
@@ -49,7 +70,7 @@ class AnimesOnline extends Engine {
             return {
                 title: search(item).find('h3').text().trim(),
                 image: search(item).find('img').attr('src') ?? '',
-                url: search(item).find('a').attr('href')?.replace(this.url , '') ?? ''
+                url: this.removeBaseUrl(search(item).find('a').attr('href'))
             }
         });
 
@@ -74,7 +95,7 @@ class AnimesOnline extends Engine {
             const episodes = search(season).find('.episodios li').toArray().map((episode) => { 
                 
                 const title = search(episode).find('.episodiotitle a').text().trim();
-                const url = search(episode).find('.episodiotitle a').attr('href')?.replace(this.url , '') ?? '';
+                const url = this.removeBaseUrl(search(episode).find('.episodiotitle a').attr('href'));
                 const image = search(episode).find('.imagen img').attr('src') ?? '';
 
                 return { title, url, image };
@@ -95,15 +116,19 @@ class AnimesOnline extends Engine {
         }
     }
 
-    async watch(address: string): Promise<Readable | null> {
+    async watch(address: string): Promise<IWatch> {
         let stream: Readable | null = null;
+        let headers: AxiosResponseHeaders = {};
 
         const html = (await api.get(`${this.url}${address}`)).data;
 
         const search = await load(html);
         const url = search('iframe').attr('src');
             
-        if (!url) return stream;
+        if (!url) return {
+            headers,
+            stream
+        };
 
         const text = (await api.get(url)).data;
         const start = text.indexOf(`"play_url":`);
@@ -115,12 +140,16 @@ class AnimesOnline extends Engine {
         await api({
             method: 'get',
             url: newUrl,
-            responseType: 'stream',
+            responseType: 'stream'
         }).then(async (response) => { 
             stream = response.data;
+            headers = response.headers;
         });
 
-        return stream;
+        return {
+            stream,
+            headers
+        };
     }
 }
 

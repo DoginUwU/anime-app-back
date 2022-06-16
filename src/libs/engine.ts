@@ -2,6 +2,7 @@ import { Response } from "express";
 import { Readable } from "stream";
 import { IAnime } from "../@types/anime";
 import { ISearch } from "../@types/search";
+import { IWatch } from "../@types/watch";
 import { getDirectories } from "../utils/directory";
 
 class Engines {
@@ -38,10 +39,15 @@ abstract class Engine {
     this.url = url;
     }
     
+    removeBaseUrl(url?: string): string {
+        return url?.replace(this.url, "") ?? '';
+    }
+    
     abstract news(page?: number): Promise<ISearch>;
+    abstract popular(page?: number): Promise<ISearch>;
     abstract search(query: string): Promise<ISearch>;
     abstract anime(url: string): Promise<IAnime>;
-    abstract watch(url: string, response?: Response): Promise<IAnime | Readable | null>;
+    abstract watch(url: string, response?: Response): Promise<IAnime | IWatch | null>;
 }
 
 const engines = new Engines();

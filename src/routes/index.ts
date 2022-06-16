@@ -13,6 +13,12 @@ routes.get("/news", celebrate({
         page: Joi.number().optional(),
     }
 }), new AnimeController().news);
+routes.get("/popular", celebrate({
+    [Segments.QUERY]: {
+        site: Joi.string().required(),
+        page: Joi.number().optional(),
+    }
+}), new AnimeController().popular);
 routes.get("/search", celebrate({
     [Segments.QUERY]: {
         search: Joi.string().required(),
