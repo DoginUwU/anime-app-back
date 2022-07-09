@@ -8,18 +8,27 @@ const animeController = new AnimeController();
 
 routes.get("/", new BaseController().get);
 
-routes.get("/news", celebrate({
+routes.get("/latest/animes", celebrate({
     [Segments.QUERY]: {
         site: Joi.string().required(),
         page: Joi.number().optional(),
     }
-}), animeController.news);
+}), animeController.latestAnimes);
+
+routes.get("/latest/episodes", celebrate({
+    [Segments.QUERY]: {
+        site: Joi.string().required(),
+        page: Joi.number().optional(),
+    }
+}), animeController.latestEpisodes);
+
 routes.get("/popular", celebrate({
     [Segments.QUERY]: {
         site: Joi.string().required(),
         page: Joi.number().optional(),
     }
 }), animeController.popular);
+
 routes.get("/search", celebrate({
     [Segments.QUERY]: {
         search: Joi.string().required(),

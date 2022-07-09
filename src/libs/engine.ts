@@ -43,7 +43,8 @@ abstract class Engine {
         return url?.replace(this.url, "") ?? '';
     }
     
-    abstract news(page?: number): Promise<ISearch>;
+    abstract latestAnimes(page?: number): Promise<ISearch>;
+    abstract latestEpisodes(page?: number): Promise<ISearch>;
     abstract popular(page?: number): Promise<ISearch>;
     abstract search(query: string): Promise<ISearch>;
     abstract anime(url: string): Promise<IAnime>;

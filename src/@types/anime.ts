@@ -3,12 +3,21 @@ interface IAnime {
     image: string;
     tags: string[];
     description: string;
+    year: number;
+    rating: number;
     seasons: ISeason[];
+    related: IRelated[];
 }
 
 interface ISeason {
     title: string;
     episodes: IEpisode[];
+}
+
+interface IRelated {
+    title: string;
+    image: string;
+    url: string;
 }
 
 interface IEpisode {

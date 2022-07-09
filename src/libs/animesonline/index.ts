@@ -17,7 +17,7 @@ class AnimesOnline extends Engine {
         super("AnimesOnline", "https://animesonline.cc");
     }
 
-    async news(page?: number): Promise<ISearch> { 
+    async latestAnimes(page?: number): Promise<ISearch> { 
         const address = `anime/page/${page ?? 1}`;
         const search = await getPage(this.url, address, this.headers);
 
@@ -26,6 +26,31 @@ class AnimesOnline extends Engine {
                 title: search(item).find('.data a').text().trim(),
                 image: search(item).find('.poster img').attr('src') ?? '',
                 url: search(item).find('a').attr('href')?.replace(this.url , '') ?? '',
+            }
+        });
+
+        const currentPage = Number(search('.pagination .current').text().trim());
+        const totalPages = Number(search('.pagination span').first().text().replace(`Pagina ${currentPage} de `, '').trim());
+        const hasNext = currentPage < totalPages;
+
+        return {
+            items,
+            page: currentPage,
+            hasNext,
+            total: totalPages
+
+        };
+    }
+
+    async latestEpisodes(page?: number): Promise<ISearch> {
+        const address = `episodio/page/${page ?? 1}`;
+        const search = await getPage(this.url, address, this.headers);
+
+        const items = search('article.item').toArray().map<ISearchItem>((item) => {
+            return {
+                title: search(item).find('.eptitle a').text().trim(),
+                image: search(item).find('.poster img').attr('src') ?? '',
+                url: search(item).find('a').attr('href')?.replace(this.url, '') ?? '',
             }
         });
 
@@ -89,6 +114,8 @@ class AnimesOnline extends Engine {
         const image = search('.poster img').attr('src') ?? '';
         const tags = search('.sgeneros a').toArray().map((tag) => search(tag).text().trim());
         const description = search('.wp-content p').text().trim();
+        const year = Number(search('.sheader .date').text().trim());
+        const rating = Number(search('.starstruck-wrap .dt_rating_vgs').text().trim());
 
         const seasons = search('#seasons .se-c').toArray().map<ISeason>((season) => { 
             const title = search(season).find('.title').text().trim();
@@ -107,12 +134,25 @@ class AnimesOnline extends Engine {
             }
         });
 
+        console.log(search('').html());
+        
+
+        const related = search('.srelacionados #single_relacionados article').toArray().map((anime) => {
+            const title = search(anime).find('img').attr('alt') ?? '';
+            const url = this.removeBaseUrl(search(anime).find('a').attr('href'));
+            const image = search(anime).find('img').attr('src') ?? '';
+            return { title, url, image };
+        });
+
         return {
             title,
             image,
             tags,
             description,
+            year,
+            rating,
             seasons,
+            related,
         }
     }
 
