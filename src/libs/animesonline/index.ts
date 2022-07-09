@@ -134,9 +134,6 @@ class AnimesOnline extends Engine {
             }
         });
 
-        console.log(search('').html());
-        
-
         const related = search('.srelacionados #single_relacionados article').toArray().map((anime) => {
             const title = search(anime).find('img').attr('alt') ?? '';
             const url = this.removeBaseUrl(search(anime).find('a').attr('href'));
